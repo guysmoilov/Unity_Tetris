@@ -4,10 +4,10 @@ using System.Collections;
 public class BoardScript : MonoBehaviour {
 
 	public Transform[,] board;
-	public int boardWidth = 12;
-	public int boardHeight = 20;
-	public int xOffset;
-	public int yOffset;
+	public int boardWidth = 14;
+	public int boardHeight = 18;
+	public int xOffset = 7;
+	public int yOffset = 9;
 
 	// Use this for initialization
 	void Start () 

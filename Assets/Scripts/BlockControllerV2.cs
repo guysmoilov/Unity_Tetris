@@ -6,10 +6,12 @@ public class BlockControllerV2 : MonoBehaviour {
 	public Transform[] blocks;
 	public BoardScript board;
 	public float moveAmount = 1f;
+	public float dropRate = 1f;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+	{
+		StartCoroutine(Drop());
 	}
 	
 	// Update is called once per frame
@@ -21,12 +23,7 @@ public class BlockControllerV2 : MonoBehaviour {
 	{
 		var blockPos = block.position;
 		Debug.Log(blockPos);
-		blockPos = block.rotation * blockPos;
-		Debug.Log(blockPos);
-		blockPos /= moveAmount;
-		Debug.Log(blockPos);
 		blockPos.x += board.xOffset;
-		Debug.Log(blockPos);
 		blockPos.y += board.yOffset;
 		Debug.Log(blockPos);
 		return blockPos;
@@ -87,58 +84,89 @@ public class BlockControllerV2 : MonoBehaviour {
 		{
 			// Check no collision on all blocks...
 			bool bCanMove = true;
-			
-			foreach (var block in blocks) 
-			{
-			}
 
 			// Rotate left
 			transform.Rotate(new Vector3(0,0,90));
+
+			foreach (var block in blocks) 
+			{
+				Vector2 boardCoords = BlockToBoardCoords(block, board);
+				
+				if (board.board[(int)boardCoords.x, (int)boardCoords.y] != null) 
+				{
+					bCanMove = false;
+					break;
+				}
+			}
+
+			// Rotate back if it failed
+			transform.Rotate(new Vector3(0,0,-90));
 		}
 		else if (Input.GetButtonDown("Fire2"))
 		{
 			// Check no collision on all blocks...
 			bool bCanMove = true;
 			
-			foreach (var block in blocks) 
-			{
-			}
-
 			// Rotate right
 			transform.Rotate(new Vector3(0,0,-90));
-		}
-
-		// Check if collided..
-		bool bHitBottom = false;
-
-		foreach (var block in blocks) 
-		{
-			Vector2 boardCoords = BlockToBoardCoords(block, board);
-
-			if (board.board[(int)boardCoords.x, (int)boardCoords.y - 1] != null)
-			{
-				bHitBottom = true;
-				break;
-			}
-		}
-
-		// If collided, stop the block, write it on the board and create a new one
-		if (bHitBottom) 
-		{
-			Debug.Log("collide");
+			
 			foreach (var block in blocks) 
 			{
 				Vector2 boardCoords = BlockToBoardCoords(block, board);
+				
+				if (board.board[(int)boardCoords.x, (int)boardCoords.y] != null) 
+				{
+					bCanMove = false;
+					break;
+				}
+			}
+			
+			// Rotate back if it failed
+			transform.Rotate(new Vector3(0,0,90));
+		}
+	}
 
-				board.board[(int)boardCoords.x, (int)boardCoords.y] = block;
+	IEnumerator Drop()
+	{
+		// Check if collided..
+		bool bHitBottom = false;
+
+		while (!bHitBottom)
+		{
+			if (board != null && board.board != null)
+			{
+				foreach (var block in blocks) 
+				{
+					Vector2 boardCoords = BlockToBoardCoords(block, board);
+					
+					if (board.board[(int)boardCoords.x, (int)boardCoords.y - 1] != null)
+					{
+						bHitBottom = true;
+						break;
+					}
+				}
+				
+				// If collided, stop the block, write it on the board and create a new one
+				if (bHitBottom) 
+				{
+					Debug.Log("collide");
+					foreach (var block in blocks) 
+					{
+						Vector2 boardCoords = BlockToBoardCoords(block, board);
+						
+						board.board[(int)boardCoords.x, (int)boardCoords.y] = block;
+					}
+					
+					this.enabled = false;
+				}
+				else
+				{
+					Debug.Log("drop!");
+					transform.Translate(Vector3.down * moveAmount);
+				}
 			}
 
-			this.enabled = false;
-		}
-		else
-		{
-			Debug.Log("drop!");
-			transform.Translate(Vector3.down * moveAmount);
+            yield return new WaitForSeconds(dropRate);
 		}
 	}
 }
