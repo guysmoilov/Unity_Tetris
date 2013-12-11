@@ -48,7 +48,10 @@ public class BlockControllerV2 : MonoBehaviour {
 			}
 
 			// Move
-			transform.Translate(Vector3.right * moveAmount, Space.World);
+            if (bCanMove)
+            {
+                transform.Translate(Vector3.right * moveAmount, Space.World); 
+            }
 		}
 		else if (Input.GetButtonDown("Left"))
 		{
@@ -67,7 +70,10 @@ public class BlockControllerV2 : MonoBehaviour {
 			}
 
 			// Move
-			transform.Translate(Vector3.left * moveAmount, Space.World);
+            if (bCanMove)
+            {
+                transform.Translate(Vector3.left * moveAmount, Space.World); 
+            }
 		}
 		
 		// Snap down
@@ -100,7 +106,10 @@ public class BlockControllerV2 : MonoBehaviour {
 			}
 
 			// Rotate back if it failed
-			transform.Rotate(new Vector3(0,0,-90));
+            if (!bCanMove)
+            {
+                transform.Rotate(new Vector3(0, 0, -90)); 
+            }
 		}
 		else if (Input.GetButtonDown("Fire2"))
 		{
@@ -122,7 +131,10 @@ public class BlockControllerV2 : MonoBehaviour {
 			}
 			
 			// Rotate back if it failed
-			transform.Rotate(new Vector3(0,0,90));
+            if (!bCanMove)
+            {
+                transform.Rotate(new Vector3(0, 0, 90)); 
+            }
 		}
 	}
 
@@ -162,7 +174,7 @@ public class BlockControllerV2 : MonoBehaviour {
 				else
 				{
 					Debug.Log("drop!");
-					transform.Translate(Vector3.down * moveAmount);
+					transform.Translate(Vector3.down * moveAmount, Space.World);
 				}
 			}
 
