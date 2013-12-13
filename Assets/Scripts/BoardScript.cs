@@ -36,7 +36,6 @@ public class BoardScript : MonoBehaviour {
 	{
 		if (board != null)
 		{
-			// Check completed rows
 			for (int row = boardHeight + 1; row > 1; row--) 
 			{
 				bool bCompleted = true;
@@ -52,7 +51,7 @@ public class BoardScript : MonoBehaviour {
 
 				if (bCompleted)
 				{
-					Debug.Log("Completed row " + row + " at " + Time.time);
+					//Debug.Log("Completed row " + row + " at " + Time.time);
 					// Drop row
 					for (int col = 2; col < boardWidth + 2; col++)
 					{
@@ -64,11 +63,11 @@ public class BoardScript : MonoBehaviour {
 						block.rigidbody.isKinematic = false;
 						block.rigidbody.useGravity = true;
 						block.rigidbody.AddForceAtPosition(new Vector3(Random.Range(-3,3), Random.Range(-1,1), Random.Range(0,0)),
-						                                   new Vector3(0, -0.5f, -0.5f),
+						                                   new Vector3(0, -0.5f * block.transform.localScale.y, -0.5f * block.transform.localScale.z),
 						                         ForceMode.Impulse);
 						block.particleSystem.Play();
 
-						for (int row2 = 2; row2 < boardHeight + 1; row2++)
+						for (int row2 = row; row2 < boardHeight + 1; row2++)
 						{
 							board[row2,col] = board[row2 + 1,col];
 							if (board[row2,col] != null)
@@ -77,6 +76,9 @@ public class BoardScript : MonoBehaviour {
 							}
 						}
 					}
+
+					// Repeat row
+					row++;
 				}
 			}
 		}

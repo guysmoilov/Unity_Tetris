@@ -162,7 +162,7 @@ public class BlockControllerV2 : MonoBehaviour {
 				// If collided, stop the block, write it on the board and create a new one
 				if (bHitBottom) 
 				{
-					Debug.Log("collide");
+					//Debug.Log("collide");
 					foreach (var block in blocks) 
 					{
 						Vector2 boardCoords = BlockToBoardCoords(block, board);
@@ -174,7 +174,7 @@ public class BlockControllerV2 : MonoBehaviour {
 				}
 				else
 				{
-					Debug.Log("drop!");
+					//Debug.Log("drop!");
 					transform.Translate(Vector3.down * moveAmount, Space.World);
 				}
 			}
