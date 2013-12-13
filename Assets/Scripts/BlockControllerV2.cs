@@ -7,6 +7,7 @@ public class BlockControllerV2 : MonoBehaviour {
 	public BoardScript board;
 	public float moveAmount = 1f;
 	public float dropRate = 1f;
+    public bool canRotate = true;
 
 	// Use this for initialization
 	void Start () 
@@ -22,10 +23,10 @@ public class BlockControllerV2 : MonoBehaviour {
 	Vector2 BlockToBoardCoords(Transform block, BoardScript board)
 	{
 		var blockPos = block.position;
-		Debug.Log(blockPos);
+		//Debug.Log(blockPos);
 		blockPos.x += board.xOffset;
 		blockPos.y += board.yOffset;
-		Debug.Log(blockPos);
+		//Debug.Log(blockPos);
 		return blockPos;
 	}
 
@@ -40,7 +41,7 @@ public class BlockControllerV2 : MonoBehaviour {
 			{
 				Vector2 boardCoords = BlockToBoardCoords(block, board);
 
-				if (board.board[(int)boardCoords.x + 1, (int)boardCoords.y] != null) 
+				if (board.board[(int)boardCoords.y, (int)boardCoords.x + 1] != null) 
 				{
 					bCanMove = false;
 					break;
@@ -62,7 +63,7 @@ public class BlockControllerV2 : MonoBehaviour {
 			{
 				Vector2 boardCoords = BlockToBoardCoords(block, board);
 				
-				if (board.board[(int)boardCoords.x - 1, (int)boardCoords.y] != null) 
+				if (board.board[(int)boardCoords.y, (int)boardCoords.x - 1] != null) 
 				{
 					bCanMove = false;
 					break;
@@ -86,7 +87,7 @@ public class BlockControllerV2 : MonoBehaviour {
 //			realFallSpeed = fallSpeed;
 //		}
 		
-		if (Input.GetButtonDown("Fire1"))
+		if (Input.GetButtonDown("Fire1") && canRotate)
 		{
 			// Check no collision on all blocks...
 			bool bCanMove = true;
@@ -98,7 +99,7 @@ public class BlockControllerV2 : MonoBehaviour {
 			{
 				Vector2 boardCoords = BlockToBoardCoords(block, board);
 				
-				if (board.board[(int)boardCoords.x, (int)boardCoords.y] != null) 
+				if (board.board[(int)boardCoords.y, (int)boardCoords.x] != null) 
 				{
 					bCanMove = false;
 					break;
@@ -111,7 +112,7 @@ public class BlockControllerV2 : MonoBehaviour {
                 transform.Rotate(new Vector3(0, 0, -90)); 
             }
 		}
-		else if (Input.GetButtonDown("Fire2"))
+        else if (Input.GetButtonDown("Fire2") && canRotate)
 		{
 			// Check no collision on all blocks...
 			bool bCanMove = true;
@@ -123,7 +124,7 @@ public class BlockControllerV2 : MonoBehaviour {
 			{
 				Vector2 boardCoords = BlockToBoardCoords(block, board);
 				
-				if (board.board[(int)boardCoords.x, (int)boardCoords.y] != null) 
+				if (board.board[(int)boardCoords.y, (int)boardCoords.x] != null) 
 				{
 					bCanMove = false;
 					break;
@@ -151,7 +152,7 @@ public class BlockControllerV2 : MonoBehaviour {
 				{
 					Vector2 boardCoords = BlockToBoardCoords(block, board);
 					
-					if (board.board[(int)boardCoords.x, (int)boardCoords.y - 1] != null)
+					if (board.board[(int)boardCoords.y - 1, (int)boardCoords.x] != null)
 					{
 						bHitBottom = true;
 						break;
@@ -161,19 +162,19 @@ public class BlockControllerV2 : MonoBehaviour {
 				// If collided, stop the block, write it on the board and create a new one
 				if (bHitBottom) 
 				{
-					Debug.Log("collide");
+					//Debug.Log("collide");
 					foreach (var block in blocks) 
 					{
 						Vector2 boardCoords = BlockToBoardCoords(block, board);
 						
-						board.board[(int)boardCoords.x, (int)boardCoords.y] = block;
+						board.board[(int)boardCoords.y, (int)boardCoords.x] = block;
 					}
 					
 					this.enabled = false;
 				}
 				else
 				{
-					Debug.Log("drop!");
+					//Debug.Log("drop!");
 					transform.Translate(Vector3.down * moveAmount, Space.World);
 				}
 			}
