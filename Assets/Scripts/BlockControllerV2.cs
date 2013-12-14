@@ -4,7 +4,11 @@ using System.Collections;
 public class BlockControllerV2 : MonoBehaviour {
 
 	public Transform[] blocks;
+	public GameObject[] blockPrefabs;
+	public GameObject nextBlock;
 	public BoardScript board;
+	public Vector3 spawnPoint = new Vector3(0, 8, 0);
+	public Vector3 previewPoint = new Vector3(13, 5, 0);
 	public float moveAmount = 1f;
 	public float dropRate = 1f;
     public bool canRotate = true;
@@ -12,6 +16,11 @@ public class BlockControllerV2 : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		Debug.Log(this.name + " activated on: " + Time.time);
+		// Stop rotating
+		this.GetComponent<Rotator>().enabled = false;
+		transform.rotation = Quaternion.identity;
+
 		StartCoroutine(Drop());
 	}
 	
@@ -23,10 +32,10 @@ public class BlockControllerV2 : MonoBehaviour {
 	Vector2 BlockToBoardCoords(Transform block, BoardScript board)
 	{
 		var blockPos = block.position;
-		//Debug.Log(blockPos);
+		Debug.Log(this.name + " " + blockPos.ToString());
 		blockPos.x += board.xOffset;
 		blockPos.y += board.yOffset;
-		//Debug.Log(blockPos);
+		Debug.Log(this.name + " " + blockPos.ToString());
 		return blockPos;
 	}
 
@@ -151,7 +160,6 @@ public class BlockControllerV2 : MonoBehaviour {
 				foreach (var block in blocks) 
 				{
 					Vector2 boardCoords = BlockToBoardCoords(block, board);
-					
 					if (board.board[(int)boardCoords.y - 1, (int)boardCoords.x] != null)
 					{
 						bHitBottom = true;
@@ -169,7 +177,19 @@ public class BlockControllerV2 : MonoBehaviour {
 						
 						board.board[(int)boardCoords.y, (int)boardCoords.x] = block;
 					}
-					
+
+					// Create new block
+					var newBlock = GameObject.Instantiate(
+						blockPrefabs[Mathf.FloorToInt(Random.Range(0, blockPrefabs.Length - float.Epsilon))],
+						previewPoint, Quaternion.identity);
+
+					// Move existing block to board
+					nextBlock.transform.position = spawnPoint;
+					var nextController = nextBlock.GetComponent<BlockControllerV2>();
+					nextController.nextBlock = newBlock as GameObject;
+					nextController.board = this.board;
+					nextBlock.GetComponent<BlockControllerV2>().enabled = true;
+
 					this.enabled = false;
 				}
 				else
