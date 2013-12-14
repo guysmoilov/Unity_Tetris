@@ -181,12 +181,16 @@ public class BlockControllerV2 : MonoBehaviour {
 					// Create new block
 					var newBlock = GameObject.Instantiate(
 						blockPrefabs[Mathf.FloorToInt(Random.Range(0, blockPrefabs.Length - float.Epsilon))],
-						previewPoint, Quaternion.identity);
+						previewPoint, Quaternion.identity) as GameObject;
+
+					// For some wierd reason, need to reset components...
+					newBlock.GetComponent<Rotator>().enabled = true;
+					newBlock.GetComponent<BlockControllerV2>().enabled = false;
 
 					// Move existing block to board
 					nextBlock.transform.position = spawnPoint;
 					var nextController = nextBlock.GetComponent<BlockControllerV2>();
-					nextController.nextBlock = newBlock as GameObject;
+					nextController.nextBlock = newBlock;
 					nextController.board = this.board;
 					nextBlock.GetComponent<BlockControllerV2>().enabled = true;
 
