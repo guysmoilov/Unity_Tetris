@@ -86,15 +86,35 @@ public class BlockControllerV2 : MonoBehaviour {
 		}
 		
 		// Snap down
-//		if (Input.GetButton("Jump"))
-//		{
-//			realFallSpeed = snapDownSpeed;
-//		}
-//		else 
-//		{
-//			realFallSpeed = fallSpeed;
-//		}
-		
+		if (Input.GetButtonDown("Jump"))
+		{
+			Debug.Log("Snapping down " + this.name);
+			int minDropHeight = int.MaxValue;
+			foreach (var block in blocks) 
+			{
+				var boardPos = BlockToBoardCoords(block, board);
+
+				int row = (int)boardPos.y;
+				for (row = (int)boardPos.y; board.board[row, (int)boardPos.x] == null; row--)
+				{
+					Debug.Log("row:" + row);
+				}
+
+				if (boardPos.y - row < minDropHeight)
+				{
+					minDropHeight = (int)boardPos.y - row;
+					Debug.Log("New min drop height: " + minDropHeight);
+				}
+			}
+
+			Debug.Log("Final Drop height: " + minDropHeight);
+
+			if (minDropHeight > 0 && minDropHeight < board.boardHeight)
+			{
+				this.transform.Translate(Vector3.down * (minDropHeight - 1f), Space.World);
+			}
+		}
+
 		if (Input.GetButtonDown("Fire1") && canRotate)
 		{
 			// Check no collision on all blocks...
