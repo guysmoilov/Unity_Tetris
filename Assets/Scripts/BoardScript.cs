@@ -67,6 +67,13 @@ public class BoardScript : MonoBehaviour {
 						                         ForceMode.Impulse);
 						block.particleSystem.Play();
 
+						// Check if need to destroy the block's parent
+						var parent = block.transform.parent.gameObject;
+						StartCoroutine("BlockParentDestroyer", parent);
+
+						// Delayed destruction
+						Destroy(block, 2f);
+
 						for (int row2 = row; row2 < boardHeight + 1; row2++)
 						{
 							board[row2,col] = board[row2 + 1,col];
@@ -83,4 +90,17 @@ public class BoardScript : MonoBehaviour {
 			}
 		}
 	}
+
+	IEnumerator BlockParentDestroyer(GameObject parent)
+	{
+		yield return new WaitForSeconds(3f);
+
+		var remainingBlocks = parent.GetComponent<BlockControllerV2>().blocks;
+		
+		Debug.Log((from blk in remainingBlocks where (blk != null) select blk).Count().ToString() + " blocks in " + parent.name);
+		if ((from blk in remainingBlocks where (blk != null) select blk).Count() <= 0)
+		{
+			Destroy(parent.gameObject);
+        }
+    }
 }

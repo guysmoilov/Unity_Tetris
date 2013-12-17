@@ -26,7 +26,6 @@ public class BlockControllerV2 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 
 	Vector2 BlockToBoardCoords(Transform block, BoardScript board)
