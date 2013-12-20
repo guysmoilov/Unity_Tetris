@@ -9,12 +9,16 @@ public class BoardScript : MonoBehaviour {
 	public int boardHeight = 18;
 	public int xOffset = 7;
 	public int yOffset = 9;
-	public long score = 0; 
+	public static long score = 0; 
 	public int rowCompletionScore = 100;
+	public GameObject[] blockPrefabs;
+	public Vector3 previewPoint = new Vector3(13, 5, 0);
 
 	// Use this for initialization
 	void Start () 
 	{
+		score = 0;
+
 		board = new Transform[boardHeight + 2,boardWidth + 4];
 
 		// Fill edges
@@ -31,6 +35,26 @@ public class BoardScript : MonoBehaviour {
 			board[0,i] = this.transform;
 			board[1,i] = this.transform;
 		}
+
+		// Create first blocks
+
+		// Preview block first
+		var newBlock = GameObject.Instantiate(
+			blockPrefabs[Mathf.FloorToInt(Random.Range(0, blockPrefabs.Length - float.Epsilon))],
+			previewPoint, Quaternion.identity) as GameObject;
+		
+		// For some wierd reason, need to reset components...
+		newBlock.GetComponent<Rotator>().enabled = true;
+		newBlock.GetComponent<BlockControllerV2>().enabled = false;
+		
+		// Move existing block to board
+		var firstBlock = GameObject.Instantiate(
+			blockPrefabs[Mathf.FloorToInt(Random.Range(0, blockPrefabs.Length - float.Epsilon))],
+			new Vector3(boardWidth / 2 + 2 - xOffset, boardHeight / 2 + 2 - yOffset), Quaternion.identity) as GameObject;
+		var nextController = firstBlock.GetComponent<BlockControllerV2>();
+		nextController.nextBlock = newBlock;
+		nextController.board = this;
+		firstBlock.GetComponent<BlockControllerV2>().enabled = true;
 	}
 	
 	// Update is called once per frame

@@ -40,6 +40,7 @@ public class BlockControllerV2 : MonoBehaviour {
 			Debug.Log("Game over!");
 			this.enabled = false;
 
+			Application.LoadLevel("GameOver");
 		}
 		else
 		{
