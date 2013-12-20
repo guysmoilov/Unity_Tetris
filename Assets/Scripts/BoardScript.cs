@@ -9,6 +9,8 @@ public class BoardScript : MonoBehaviour {
 	public int boardHeight = 18;
 	public int xOffset = 7;
 	public int yOffset = 9;
+	public long score = 0; 
+	public int rowCompletionScore = 100;
 
 	// Use this for initialization
 	void Start () 
@@ -51,7 +53,9 @@ public class BoardScript : MonoBehaviour {
 
 				if (bCompleted)
 				{
-					//Debug.Log("Completed row " + row + " at " + Time.time);
+					Debug.Log("Completed row " + row + " at " + Time.time);
+					score += rowCompletionScore;
+
 					// Drop row
 					for (int col = 2; col < boardWidth + 2; col++)
 					{

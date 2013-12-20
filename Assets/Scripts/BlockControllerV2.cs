@@ -21,7 +21,30 @@ public class BlockControllerV2 : MonoBehaviour {
 		this.GetComponent<Rotator>().enabled = false;
 		transform.rotation = Quaternion.identity;
 
-		StartCoroutine(Drop());
+		// Check if game over
+		bool bGameOver = false;
+		
+		foreach (var block in blocks) 
+		{
+			Vector2 boardCoords = BlockToBoardCoords(block, board);
+			
+			if (board.board[(int)boardCoords.y, (int)boardCoords.x] != null) 
+			{
+				bGameOver = true;
+				break;
+			}
+		}
+
+		if (bGameOver)
+		{
+			Debug.Log("Game over!");
+			this.enabled = false;
+
+		}
+		else
+		{
+			StartCoroutine(Drop());
+		}
 	}
 	
 	// Update is called once per frame
