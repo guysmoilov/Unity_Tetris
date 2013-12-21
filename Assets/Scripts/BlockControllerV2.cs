@@ -40,7 +40,9 @@ public class BlockControllerV2 : MonoBehaviour {
 			Debug.Log("Game over!");
 			this.enabled = false;
 
-			Application.LoadLevel("GameOver");
+			board.DestroyAllBlocks();
+
+			StartCoroutine(DelayedGameOver(3f));
 		}
 		else
 		{
@@ -48,8 +50,10 @@ public class BlockControllerV2 : MonoBehaviour {
 		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	IEnumerator DelayedGameOver(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		Application.LoadLevel("GameOver");
 	}
 
 	Vector2 BlockToBoardCoords(Transform block, BoardScript board)

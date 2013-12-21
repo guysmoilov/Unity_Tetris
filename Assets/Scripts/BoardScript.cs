@@ -131,4 +131,27 @@ public class BoardScript : MonoBehaviour {
 			Destroy(parent.gameObject);
         }
     }
+
+	public void DestroyAllBlocks()
+	{
+		for (int i = 2; i < boardHeight + 2; i++) 
+		{
+			for (int j = 2; j < boardWidth + 2; j++)
+			{
+				if (board[i, j] != null)
+				{
+					var block = board[i,j].gameObject;
+					
+					block.transform.Translate(Vector3.back, Space.World);
+					block.collider.enabled = true;
+					block.rigidbody.isKinematic = false;
+					block.rigidbody.useGravity = true;
+					block.rigidbody.AddForceAtPosition(new Vector3(Random.Range(-3,3), Random.Range(-1,1), Random.Range(0,0)),
+					                                   new Vector3(0, -0.5f * block.transform.localScale.y, -0.5f * block.transform.localScale.z),
+					                                   ForceMode.Impulse);
+					block.particleSystem.Play();
+				}
+			}
+		}
+	}
 }
