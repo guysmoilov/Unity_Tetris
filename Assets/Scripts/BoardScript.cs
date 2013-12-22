@@ -13,6 +13,7 @@ public class BoardScript : MonoBehaviour {
 	public int rowCompletionScore = 100;
 	public GameObject[] blockPrefabs;
 	public Vector3 previewPoint = new Vector3(13, 5, 0);
+	public AudioClip rowCompletionSound;
 
 	// Use this for initialization
 	void Start () 
@@ -62,6 +63,8 @@ public class BoardScript : MonoBehaviour {
 	{
 		if (board != null)
 		{
+			bool bAnyCompleted = false;
+
 			for (int row = boardHeight + 1; row > 1; row--) 
 			{
 				bool bCompleted = true;
@@ -77,6 +80,7 @@ public class BoardScript : MonoBehaviour {
 
 				if (bCompleted)
 				{
+					bAnyCompleted = true;
 					Debug.Log("Completed row " + row + " at " + Time.time);
 					score += rowCompletionScore;
 
@@ -115,6 +119,11 @@ public class BoardScript : MonoBehaviour {
 					// Repeat row
 					row++;
 				}
+			}
+
+			if (bAnyCompleted)
+			{
+				AudioSource.PlayClipAtPoint(rowCompletionSound, Vector3.zero);
 			}
 		}
 	}

@@ -12,6 +12,8 @@ public class BlockControllerV2 : MonoBehaviour {
 	public float moveAmount = 1f;
 	public float dropRate = 1f;
     public bool canRotate = true;
+	public AudioClip gameOverSound;
+	public AudioClip moveSound;
 
 	// Use this for initialization
 	void Start () 
@@ -41,6 +43,10 @@ public class BlockControllerV2 : MonoBehaviour {
 			this.enabled = false;
 
 			board.DestroyAllBlocks();
+			if (gameOverSound != null)
+			{
+				AudioSource.PlayClipAtPoint(gameOverSound, Vector3.zero);
+			}
 
 			StartCoroutine(DelayedGameOver(3f));
 		}
